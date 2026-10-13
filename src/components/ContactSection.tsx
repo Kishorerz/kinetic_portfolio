@@ -70,7 +70,7 @@ export function ContactSection() {
   };
 
   return (
-    <section id="contact" className="py-[clamp(80px,12vh,150px)] px-[var(--spacing-gutter)] border-t border-[var(--color-hairline)]">
+    <section id="contact" className="pt-[clamp(48px,8vh,80px)] pb-[clamp(80px,12vh,150px)] px-[var(--spacing-gutter)] border-t border-[var(--color-hairline)]">
       {/* Eyebrow */}
       <div className="font-['Geist_Mono',monospace] text-[12px] uppercase tracking-[0.06em] text-[var(--color-accent)] mb-8">
         (Contact & Collab)
