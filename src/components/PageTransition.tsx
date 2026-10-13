@@ -45,16 +45,32 @@ export function PageTransitionProvider({
   const navigateWithTransition = useCallback(
     (href: string, title: string = "WORK", meta: string = "PROJECT") => {
       if (phase !== "idle") return;
+      // Immediately prefetch target route in Next.js router
+      try {
+        router.prefetch(href);
+      } catch {}
+
       pendingHrefRef.current = href;
       setTargetTitle(title);
       setTargetMeta(meta);
       setPhase("covering");
 
-      // Swiftly navigate once bars cover the screen (reduced from 650ms to 240ms)
+      // Navigate after swift curtain cover (140ms)
       setTimeout(() => {
         setPhase("covered");
         router.push(href);
-      }, 240);
+
+        // Fallback safety: If route is already cached or pathname is same, uncover immediately
+        setTimeout(() => {
+          setPhase((p) => (p === "covered" ? "uncovering" : p));
+          setTimeout(() => {
+            setPhase("idle");
+            setTargetTitle("");
+            setTargetMeta("");
+            pendingHrefRef.current = null;
+          }, 180);
+        }, 160);
+      }, 140);
     },
     [phase, router]
   );
@@ -62,7 +78,6 @@ export function PageTransitionProvider({
   // When pathname changes after navigation, uncover the screen
   useEffect(() => {
     if (phase === "covered") {
-      // Instant uncover (reduced from 100ms pause to 20ms)
       const timer = setTimeout(() => {
         setPhase("uncovering");
         const exitTimer = setTimeout(() => {
@@ -70,9 +85,9 @@ export function PageTransitionProvider({
           setTargetTitle("");
           setTargetMeta("");
           pendingHrefRef.current = null;
-        }, 260); // Fast uncurtain exit (reduced from 700ms to 260ms)
+        }, 180);
         return () => clearTimeout(exitTimer);
-      }, 20);
+      }, 10);
       return () => clearTimeout(timer);
     }
   }, [pathname, phase]);
@@ -105,12 +120,12 @@ export function PageTransitionProvider({
               transformStyle = "translateY(-101%)";
             }
 
-            // Snappy stagger delays
+            // Ultra-snappy stagger delays
             const delayMs =
               phase === "covering"
-                ? i * 25
+                ? i * 14
                 : phase === "uncovering"
-                ? i * 20
+                ? i * 10
                 : 0;
 
             return (
@@ -119,7 +134,7 @@ export function PageTransitionProvider({
                 className="flex-1 h-full bg-[var(--color-accent)] -mr-[1px] will-change-transform"
                 style={{
                   transform: transformStyle,
-                  transition: `transform 0.28s cubic-bezier(0.25, 1, 0.5, 1) ${delayMs}ms`,
+                  transition: `transform 0.16s cubic-bezier(0.16, 1, 0.3, 1) ${delayMs}ms`,
                 }}
               />
             );

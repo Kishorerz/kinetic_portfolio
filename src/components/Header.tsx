@@ -2,11 +2,12 @@
 
 import React, { useState, useRef } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { siteConfig } from "@/site.config";
 import { usePageTransition } from "./PageTransition";
 
 export function Header() {
+  const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const clickCountRef = useRef(0);
@@ -119,6 +120,7 @@ export function Header() {
               <a
                 key={item.href}
                 href={item.href}
+                onMouseEnter={() => router.prefetch(item.href)}
                 onClick={(e) => handleNavClick(e, item.href, item.title, item.meta)}
                 className={`py-1 transition-colors flex items-center gap-1.5 ${
                   isActive

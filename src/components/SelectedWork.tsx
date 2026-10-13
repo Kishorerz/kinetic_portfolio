@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { siteConfig, Project } from "@/site.config";
 import { usePageTransition } from "./PageTransition";
 import {
@@ -12,6 +13,7 @@ import {
 import { ArrowUpRight } from "lucide-react";
 
 export function SelectedWork() {
+  const router = useRouter();
   const [activeIndex, setActiveIndex] = useState(0);
   const [isHoveringList, setIsHoveringList] = useState(false);
   const { navigateWithTransition } = usePageTransition();
@@ -107,8 +109,14 @@ export function SelectedWork() {
                 href={`/work/${proj.slug}`}
                 onClick={(e) => handleProjectClick(e, proj)}
                 data-cursor="View"
-                onMouseEnter={() => setActiveIndex(index)}
-                onFocus={() => setActiveIndex(index)}
+                onMouseEnter={() => {
+                  setActiveIndex(index);
+                  router.prefetch(`/work/${proj.slug}`);
+                }}
+                onFocus={() => {
+                  setActiveIndex(index);
+                  router.prefetch(`/work/${proj.slug}`);
+                }}
                 className={`group relative flex flex-col justify-center min-h-[38vh] py-8 border-t border-[var(--color-hairline)] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] cursor-pointer ${
                   isActive
                     ? "text-[var(--color-accent)] lg:pl-7"
