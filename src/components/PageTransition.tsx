@@ -45,37 +45,21 @@ export function PageTransitionProvider({
   const navigateWithTransition = useCallback(
     (href: string, title: string = "WORK", meta: string = "PROJECT") => {
       if (phase !== "idle") return;
-      // Immediately prefetch target route in Next.js router
-      try {
-        router.prefetch(href);
-      } catch {}
-
       pendingHrefRef.current = href;
       setTargetTitle(title);
       setTargetMeta(meta);
       setPhase("covering");
 
-      // Navigate after swift curtain cover (140ms)
+      // Original template timing: Allow the blue bars to smoothly glide up and cover screen
       setTimeout(() => {
         setPhase("covered");
         router.push(href);
-
-        // Fallback safety: If route is already cached or pathname is same, uncover immediately
-        setTimeout(() => {
-          setPhase((p) => (p === "covered" ? "uncovering" : p));
-          setTimeout(() => {
-            setPhase("idle");
-            setTargetTitle("");
-            setTargetMeta("");
-            pendingHrefRef.current = null;
-          }, 180);
-        }, 160);
-      }, 140);
+      }, 650);
     },
     [phase, router]
   );
 
-  // When pathname changes after navigation, uncover the screen
+  // When pathname changes after navigation, smoothly uncover the screen
   useEffect(() => {
     if (phase === "covered") {
       const timer = setTimeout(() => {
@@ -85,9 +69,9 @@ export function PageTransitionProvider({
           setTargetTitle("");
           setTargetMeta("");
           pendingHrefRef.current = null;
-        }, 180);
+        }, 700);
         return () => clearTimeout(exitTimer);
-      }, 10);
+      }, 100);
       return () => clearTimeout(timer);
     }
   }, [pathname, phase]);
@@ -120,12 +104,12 @@ export function PageTransitionProvider({
               transformStyle = "translateY(-101%)";
             }
 
-            // Ultra-snappy stagger delays
+            // Original template stagger delays
             const delayMs =
               phase === "covering"
-                ? i * 14
+                ? i * 65
                 : phase === "uncovering"
-                ? i * 10
+                ? i * 55
                 : 0;
 
             return (
@@ -134,7 +118,7 @@ export function PageTransitionProvider({
                 className="flex-1 h-full bg-[var(--color-accent)] -mr-[1px] will-change-transform"
                 style={{
                   transform: transformStyle,
-                  transition: `transform 0.16s cubic-bezier(0.16, 1, 0.3, 1) ${delayMs}ms`,
+                  transition: `transform 0.65s cubic-bezier(0.76, 0, 0.24, 1) ${delayMs}ms`,
                 }}
               />
             );
