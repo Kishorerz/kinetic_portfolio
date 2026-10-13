@@ -23,56 +23,75 @@ export function BlueScrollWipe() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Compute 3-Phase Choreography
+  // Tightened 3-Phase Choreography: Wipe in fast, hold comfortably, wipe out smoothly
   let translateY = 100; // Start below screen
+  let contentOpacity = 0;
+  let contentScale = 0.92;
+  let contentY = 40;
 
-  if (progress <= 0.45) {
-    // Phase 1: Wipe up from bottom to cover screen (100% -> 0%)
-    const phaseProgress = progress / 0.45;
+  if (progress <= 0.35) {
+    // Phase 1: Rapid entrance wipe (0 -> 0.35)
+    const phaseProgress = progress / 0.35;
     translateY = (1 - phaseProgress) * 100;
-  } else if (progress <= 0.75) {
-    // Phase 2: Stay pinned full screen (0%)
+    contentOpacity = Math.min(phaseProgress * 1.5, 1);
+    contentScale = 0.92 + phaseProgress * 0.08;
+    contentY = (1 - phaseProgress) * 40;
+  } else if (progress <= 0.70) {
+    // Phase 2: Pinned & fully revealed (0.35 -> 0.70)
     translateY = 0;
+    contentOpacity = 1;
+    contentScale = 1;
+    contentY = 0;
   } else {
-    // Phase 3: Wipe up and exit (0% -> -100%)
-    const phaseProgress = (progress - 0.75) / 0.25;
+    // Phase 3: Fluid exit wipe up (0.70 -> 1.0)
+    const phaseProgress = (progress - 0.70) / 0.30;
     translateY = -phaseProgress * 100;
+    contentOpacity = Math.max(1 - phaseProgress * 1.2, 0);
+    contentScale = 1 + phaseProgress * 0.05;
+    contentY = -phaseProgress * 30;
   }
 
-  // Text letter reveal & line expansion
-  const textScale = Math.min(Math.max((progress - 0.2) / 0.35, 0), 1);
-  const lineScale = Math.min(Math.max((progress - 0.35) / 0.25, 0), 1);
+  // Expanding divider line in sync with entrance
+  const lineScale = Math.min(Math.max((progress - 0.15) / 0.3, 0), 1);
 
   return (
-    <section ref={containerRef} className="relative h-[240vh] select-none">
+    <section ref={containerRef} className="relative h-[135vh] select-none -my-1">
       <div className="sticky top-0 h-screen w-full overflow-hidden">
         {/* Full-Screen Blue Wipe Layer */}
         <div
-          className="absolute inset-0 bg-[var(--color-accent)] z-20 flex flex-col justify-between p-[var(--spacing-gutter)] text-[#111010] will-change-transform shadow-[0_-20px_50px_rgba(0,0,0,0.5)]"
+          className="absolute inset-0 bg-[var(--color-accent)] z-20 flex flex-col justify-between p-[var(--spacing-gutter)] text-[#111010] will-change-transform shadow-[0_-25px_60px_rgba(0,0,0,0.6)]"
           style={{
             transform: `translate3d(0, ${translateY.toFixed(2)}%, 0)`,
           }}
         >
           {/* Top Wipe Meta */}
-          <div className="flex justify-between items-center font-['Geist_Mono',monospace] text-[12px] uppercase tracking-[0.06em]">
-            <span className="flex items-center gap-2">
+          <div
+            className="flex justify-between items-center font-['Geist_Mono',monospace] text-[12px] uppercase tracking-[0.06em] transition-opacity duration-200"
+            style={{ opacity: contentOpacity }}
+          >
+            <span className="flex items-center gap-2 font-bold">
               <Sparkles className="w-3.5 h-3.5" /> (Section Transition)
             </span>
-            <span>{siteConfig.eyebrow}</span>
-            <span>05 / CAPABILITIES</span>
+            <span className="hidden sm:inline font-semibold">{siteConfig.eyebrow}</span>
+            <span className="font-bold">05 / DIRECT ACCESS</span>
           </div>
 
           {/* Central Contact Information on Electric Blue */}
-          <div className="my-auto">
-            <div className="font-['Geist_Mono',monospace] text-[13px] uppercase tracking-[0.08em] font-bold text-[#111010]/80 mb-3">
-              Direct Contact &amp; Resume
+          <div
+            className="my-auto transition-transform duration-100 ease-out will-change-transform"
+            style={{
+              opacity: contentOpacity,
+              transform: `translate3d(0, ${contentY.toFixed(1)}px, 0) scale(${contentScale.toFixed(3)})`,
+            }}
+          >
+            <div className="font-['Geist_Mono',monospace] text-[13px] uppercase tracking-[0.08em] font-extrabold text-[#111010]/80 mb-3">
+              Direct Contact &amp; Credentials
             </div>
 
             <div
-              className="text-[clamp(44px,9vw,140px)] font-bold uppercase tracking-[-0.02em] leading-[0.88] origin-left transition-transform duration-150"
+              className="text-[clamp(44px,9vw,140px)] font-bold uppercase tracking-[-0.02em] leading-[0.88]"
               style={{
                 fontVariationSettings: "'wdth' 70, 'wght' 800",
-                transform: `scale(${0.94 + textScale * 0.06})`,
               }}
             >
               Get In Touch
@@ -90,7 +109,7 @@ export function BlueScrollWipe() {
             <div className="mt-8 flex flex-wrap items-center gap-6">
               <a
                 href={`mailto:${siteConfig.contact.email}`}
-                className="font-['Geist_Mono',monospace] text-[clamp(16px,2vw,24px)] font-bold text-[#111010] hover:underline underline-offset-4"
+                className="font-['Geist_Mono',monospace] text-[clamp(16px,2.2vw,26px)] font-bold text-[#111010] hover:underline underline-offset-4"
               >
                 {siteConfig.contact.email}
               </a>
@@ -98,21 +117,24 @@ export function BlueScrollWipe() {
               <a
                 href={siteConfig.contact.resumeUrl || "/resume.pdf"}
                 download="Kishor_Kumar_Resume.pdf"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#111010] text-[var(--color-accent)] font-['Geist_Mono',monospace] text-[13px] uppercase font-bold tracking-wider hover:bg-white hover:text-[#111010] transition-colors shadow-lg"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#111010] text-[var(--color-accent)] font-['Geist_Mono',monospace] text-[13px] uppercase font-bold tracking-wider hover:bg-white hover:text-[#111010] transition-all duration-200 shadow-xl hover:scale-105 active:scale-95"
               >
                 <span>Download My CV</span>
-                <span>↓</span>
+                <span className="animate-pulse">↓</span>
               </a>
             </div>
           </div>
 
           {/* Bottom Wipe Prompt */}
-          <div className="flex justify-between items-end font-['Geist_Mono',monospace] text-[12px] uppercase tracking-[0.06em]">
-            <span className="max-w-[42ch] leading-relaxed">
+          <div
+            className="flex justify-between items-end font-['Geist_Mono',monospace] text-[12px] uppercase tracking-[0.06em] transition-opacity duration-200"
+            style={{ opacity: contentOpacity }}
+          >
+            <span className="max-w-[42ch] leading-relaxed font-semibold">
               Available for AI/ML engineering, full-stack architectures, and IoT hardware collaborations.
             </span>
-            <div className="flex items-center gap-2">
-              <span>Continue scroll</span>
+            <div className="flex items-center gap-2 font-bold">
+              <span>Scroll down</span>
               <ArrowDown className="w-4 h-4 animate-bounce" />
             </div>
           </div>

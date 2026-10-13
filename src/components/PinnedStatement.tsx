@@ -76,7 +76,7 @@ export function PinnedStatement() {
   ];
 
   return (
-    <section id="about" ref={containerRef} className="relative h-[180vh] select-none border-t border-[var(--color-hairline)]">
+    <section id="about" ref={containerRef} className="relative h-[140vh] select-none border-t border-[var(--color-hairline)]">
       <div className="sticky top-0 flex h-screen flex-col justify-between py-[clamp(28px,4vh,48px)] px-[var(--spacing-gutter)]">
         {/* Top Eyebrow Tag */}
         <div className="flex justify-between items-center font-['Geist_Mono',monospace] text-[12px] uppercase tracking-[0.06em] text-[var(--color-label)] border-b border-[var(--color-hairline)] pb-4">
