@@ -60,7 +60,7 @@ export function CertificatesStackScroll() {
         {/* Top Eyebrow Meta */}
         <div className="flex justify-between items-center font-['Geist_Mono',monospace] text-[12px] uppercase tracking-[0.06em] text-[var(--color-label)] border-b border-[var(--color-hairline)] pb-4">
           <span className="flex items-center gap-2 text-[var(--color-accent)]">
-            <Award className="w-3.5 h-3.5" /> (Credentials &amp; Certifications)
+            <Award className="w-3.5 h-3.5" /> (Licenses &amp; Certifications)
           </span>
           <span className="hidden md:inline">Continuous Scroll · Stacking Deck</span>
           <span>Verified ({count.toString().padStart(2, "0")})</span>
@@ -72,10 +72,10 @@ export function CertificatesStackScroll() {
             className="text-[clamp(36px,5.5vw,78px)] font-bold uppercase tracking-[-0.02em] leading-none text-[var(--color-text)]"
             style={{ fontVariationSettings: "'wdth' 70, 'wght' 800" }}
           >
-            Verified Accreditations
+            Certificates &amp; Credentials
           </h2>
           <p className="font-['Geist_Mono',monospace] text-[12px] text-[var(--color-muted)] uppercase tracking-[0.06em] mt-2">
-            Scroll to reveal and stack verified professional specializations
+            Scroll to reveal and stack verified licenses and certifications one by one
           </p>
         </div>
 

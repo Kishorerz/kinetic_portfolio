@@ -10,6 +10,9 @@ export function ContactSection() {
   const [submitted, setSubmitted] = useState(false);
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
   const projectNeeds = [
     "Full-Stack App",
     "AI / ML Solution",
@@ -31,9 +34,39 @@ export function ContactSection() {
     setTimeout(() => setCopied(false), 2500);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    setIsSubmitting(true);
+    setErrorMessage(null);
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          message: formData.message,
+          needs: selectedChips,
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error("Unable to send inquiry right now.");
+      }
+
+      setSubmitted(true);
+    } catch {
+      // Fallback: open user's mail client directly pre-filled to Kishor
+      const subject = encodeURIComponent(`Portfolio Inquiry from ${formData.name}`);
+      const body = encodeURIComponent(
+        `Hi Kishor,\n\n${formData.message}\n\nProject Scope: ${selectedChips.join(", ")}\n\nBest,\n${formData.name} (${formData.email})`
+      );
+      window.location.href = `mailto:${siteConfig.contact.email}?subject=${subject}&body=${body}`;
+      setSubmitted(true);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -213,13 +246,28 @@ export function ContactSection() {
                 />
               </div>
 
+              {/* Error Message if any */}
+              {errorMessage && (
+                <div className="font-['Geist_Mono',monospace] text-[12px] text-red-400 bg-red-950/40 border border-red-800/50 rounded-lg p-3">
+                  {errorMessage}
+                </div>
+              )}
+
               {/* Submit Button */}
               <button
                 type="submit"
+                disabled={isSubmitting}
                 data-cursor="Send"
-                className="w-full mt-2 rounded-full bg-[var(--color-accent)] text-[var(--color-on-accent)] py-4 font-['Geist_Mono',monospace] text-[13px] font-semibold uppercase tracking-[0.06em] hover:bg-[var(--color-text)] transition-colors flex items-center justify-center gap-2"
+                className="w-full mt-2 rounded-full bg-[var(--color-accent)] text-[var(--color-on-accent)] py-4 font-['Geist_Mono',monospace] text-[13px] font-semibold uppercase tracking-[0.06em] hover:bg-[var(--color-text)] transition-colors flex items-center justify-center gap-2 disabled:opacity-60"
               >
-                Send message <ArrowUpRight className="w-4 h-4" />
+                {isSubmitting ? (
+                  <span>Sending message...</span>
+                ) : (
+                  <>
+                    <span>Send message</span>
+                    <ArrowUpRight className="w-4 h-4" />
+                  </>
+                )}
               </button>
             </form>
           )}

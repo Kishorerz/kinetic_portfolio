@@ -85,7 +85,7 @@ export function SelectedWork() {
       {/* Eyebrow Header */}
       <div className="flex justify-between items-center pb-8 border-b border-[var(--color-hairline)] mb-2 font-['Geist_Mono',monospace] text-[12px] uppercase tracking-[0.06em] text-[var(--color-label)]">
         <h2 className="flex items-center gap-2">
-          Selected work <span>(04)</span>
+          Projects <span>(04)</span>
         </h2>
         <span className="hidden sm:inline">2023 — 2026</span>
       </div>
