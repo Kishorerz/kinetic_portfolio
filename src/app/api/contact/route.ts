@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import nodemailer from "nodemailer";
 
 export async function POST(req: Request) {
   try {
@@ -11,58 +12,94 @@ export async function POST(req: Request) {
       );
     }
 
-    const payload = {
-      name: name || "Anonymous Portfolio Visitor",
-      email,
-      message,
-      projectNeeds: Array.isArray(needs) ? needs.join(", ") : needs,
-      _subject: `New Portfolio Inquiry from ${name || email}`,
-      to: "kishorkumar.baskarann@gmail.com",
-    };
+    const recipient = "kishorkumar.baskarann@gmail.com";
+    const projectNeeds = Array.isArray(needs) ? needs.join(", ") : needs || "General Inquiry";
+    let delivered = false;
 
-    // If user provided a Resend API key
-    if (process.env.RESEND_API_KEY) {
-      const res = await fetch("https://api.resend.com/emails", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
-        },
-        body: JSON.stringify({
-          from: "Portfolio Contact <onboarding@resend.dev>",
-          to: "kishorkumar.baskarann@gmail.com",
-          subject: `Portfolio Message from ${name || email}`,
-          reply_to: email,
-          text: `Name: ${name}\nEmail: ${email}\nFocus: ${payload.projectNeeds}\n\nMessage:\n${message}`,
-        }),
-      });
+    // 1. GMAIL SMTP (If GMAIL_USER & GMAIL_APP_PASSWORD are set in .env.local or Vercel Environment Variables)
+    if (process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD) {
+      try {
+        const transporter = nodemailer.createTransport({
+          service: "gmail",
+          auth: {
+            user: process.env.GMAIL_USER,
+            pass: process.env.GMAIL_APP_PASSWORD,
+          },
+        });
 
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
-        console.error("Resend delivery failed:", errorData);
+        await transporter.sendMail({
+          from: `"Portfolio Visitor" <${process.env.GMAIL_USER}>`,
+          to: recipient,
+          replyTo: email,
+          subject: `⚡ New Portfolio Message from ${name || email}`,
+          html: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; padding: 20px; border: 1px solid #eee; border-radius: 8px;">
+              <h2 style="color: #111; margin-top: 0;">New Message from Portfolio</h2>
+              <p><strong>Name:</strong> ${name || "Not provided"}</p>
+              <p><strong>Email:</strong> <a href="mailto:${email}">${email}</a></p>
+              <p><strong>Scope / Interest:</strong> ${projectNeeds}</p>
+              <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;" />
+              <p style="font-size: 16px; line-height: 1.5; color: #333;">${message.replace(/\n/g, "<br>")}</p>
+            </div>
+          `,
+        });
+        delivered = true;
+        console.log("[SMTP] Delivered email via Gmail to " + recipient);
+      } catch (smtpErr) {
+        console.error("[SMTP] Error sending via Gmail:", smtpErr);
       }
     }
 
-    // Direct Formspree / Webhook forwarding fallback if configured
-    const formspreeEndpoint = process.env.FORMSPREE_ENDPOINT || "https://formspree.io/f/mqaeldge";
-    const forwardRes = await fetch(formspreeEndpoint, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify(payload),
-    }).catch((err) => {
-      console.warn("Direct forwarder warning:", err);
-      return null;
-    });
+    // 2. WEB3FORMS (Zero setup API that forwards directly to the target email)
+    if (!delivered) {
+      try {
+        const web3Key = process.env.WEB3FORMS_ACCESS_KEY;
+        if (web3Key) {
+          const res = await fetch("https://api.web3forms.com/submit", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              access_key: web3Key,
+              name: name || "Portfolio Visitor",
+              email,
+              message,
+              project_needs: projectNeeds,
+              subject: `Portfolio Message from ${name || email}`,
+            }),
+          });
+          if (res.ok) delivered = true;
+        }
+      } catch (w3Err) {
+        console.warn("[Web3Forms] Error:", w3Err);
+      }
+    }
 
-    console.log(`[Contact Form] Delivered inquiry from ${email} to kishorkumar.baskarann@gmail.com`);
+    // 3. FORMSPREE / CUSTOM ENDPOINT
+    if (!delivered && process.env.FORMSPREE_ENDPOINT) {
+      try {
+        const res = await fetch(process.env.FORMSPREE_ENDPOINT, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Accept: "application/json" },
+          body: JSON.stringify({
+            name,
+            email,
+            message,
+            projectNeeds,
+            to: recipient,
+          }),
+        });
+        if (res.ok) delivered = true;
+      } catch (fsErr) {
+        console.warn("[Formspree] Error:", fsErr);
+      }
+    }
 
     return NextResponse.json({
       success: true,
-      message: "Inquiry received and dispatched to kishorkumar.baskarann@gmail.com",
-      forwarded: Boolean(forwardRes?.ok),
+      delivered,
+      message: delivered
+        ? "Your message has been sent to Kishor."
+        : "Message received. (Tip: configure GMAIL_APP_PASSWORD in environment variables for instant inbox transmission)",
     });
   } catch (error) {
     console.error("Contact backend route error:", error);
