@@ -383,5 +383,6 @@ export const siteConfig = {
     email: "kishorkumar.baskarann@gmail.com",
     github: "https://github.com/Kishorerz",
     linkedin: "https://www.linkedin.com/in/kishorkumarbaskaran/",
+    resumeUrl: "/resume.pdf", // Can be replaced with any local PDF in /public or Google Drive / cloud link
   },
 };

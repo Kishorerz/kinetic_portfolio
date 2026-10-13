@@ -86,8 +86,16 @@ export function ContactSection() {
             )}
           </div>
 
-          {/* Social Profiles */}
-          <div className="flex items-center gap-6 font-['Geist_Mono',monospace] text-[12px] uppercase tracking-[0.06em]">
+          {/* Social Profiles & Download CV */}
+          <div className="flex flex-wrap items-center gap-6 font-['Geist_Mono',monospace] text-[12px] uppercase tracking-[0.06em]">
+            <a
+              href={siteConfig.contact.resumeUrl || "/resume.pdf"}
+              download="Kishor_Kumar_Resume.pdf"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--color-accent)] text-[var(--color-on-accent)] font-semibold hover:bg-white hover:text-[#111010] transition-colors"
+            >
+              <span>Download My CV</span>
+              <span>↓</span>
+            </a>
             <a
               href={siteConfig.contact.github}
               target="_blank"

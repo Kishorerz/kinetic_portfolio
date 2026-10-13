@@ -6,7 +6,6 @@ import { CertificatesStackScroll } from "@/components/CertificatesStackScroll";
 import { CertificationsSection } from "@/components/CertificationsSection";
 import { PinnedStatement } from "@/components/PinnedStatement";
 import { BlueScrollWipe } from "@/components/BlueScrollWipe";
-import { ServiceTiles } from "@/components/ServiceTiles";
 import { ContactSection } from "@/components/ContactSection";
 import { Footer } from "@/components/Footer";
 import { IntroPreloader } from "@/components/IntroPreloader";
@@ -89,11 +88,8 @@ export default function Home() {
       {/* Pinned Scroll Statement (Word-by-word lighting) */}
       <PinnedStatement />
 
-      {/* Full-Screen Scroll-Synchronized Reversible Blue Wipe Transition */}
+      {/* Full-Screen Scroll-Synchronized Reversible Blue Wipe Transition with Direct Contact & Resume */}
       <BlueScrollWipe />
-
-      {/* Services Grid (Capabilities with bottom-up accent fill) */}
-      <ServiceTiles />
 
       {/* Editorial Contact & Enquiry Section */}
       <ContactSection />

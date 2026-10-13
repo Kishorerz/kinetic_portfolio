@@ -50,11 +50,11 @@ export function PageTransitionProvider({
       setTargetMeta(meta);
       setPhase("covering");
 
-      // After bars cover the screen, navigate
+      // Swiftly navigate once bars cover the screen (reduced from 650ms to 240ms)
       setTimeout(() => {
         setPhase("covered");
         router.push(href);
-      }, 650);
+      }, 240);
     },
     [phase, router]
   );
@@ -62,7 +62,7 @@ export function PageTransitionProvider({
   // When pathname changes after navigation, uncover the screen
   useEffect(() => {
     if (phase === "covered") {
-      // Small pause to let new page render
+      // Instant uncover (reduced from 100ms pause to 20ms)
       const timer = setTimeout(() => {
         setPhase("uncovering");
         const exitTimer = setTimeout(() => {
@@ -70,9 +70,9 @@ export function PageTransitionProvider({
           setTargetTitle("");
           setTargetMeta("");
           pendingHrefRef.current = null;
-        }, 700);
+        }, 260); // Fast uncurtain exit (reduced from 700ms to 260ms)
         return () => clearTimeout(exitTimer);
-      }, 100);
+      }, 20);
       return () => clearTimeout(timer);
     }
   }, [pathname, phase]);
@@ -105,12 +105,12 @@ export function PageTransitionProvider({
               transformStyle = "translateY(-101%)";
             }
 
-            // Stagger delays
+            // Snappy stagger delays
             const delayMs =
               phase === "covering"
-                ? i * 65
+                ? i * 25
                 : phase === "uncovering"
-                ? i * 55
+                ? i * 20
                 : 0;
 
             return (
@@ -119,7 +119,7 @@ export function PageTransitionProvider({
                 className="flex-1 h-full bg-[var(--color-accent)] -mr-[1px] will-change-transform"
                 style={{
                   transform: transformStyle,
-                  transition: `transform 0.65s cubic-bezier(0.76, 0, 0.24, 1) ${delayMs}ms`,
+                  transition: `transform 0.28s cubic-bezier(0.25, 1, 0.5, 1) ${delayMs}ms`,
                 }}
               />
             );

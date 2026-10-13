@@ -62,16 +62,20 @@ export function BlueScrollWipe() {
             <span>05 / CAPABILITIES</span>
           </div>
 
-          {/* Central Massive Headline on Blue */}
+          {/* Central Contact Information on Electric Blue */}
           <div className="my-auto">
+            <div className="font-['Geist_Mono',monospace] text-[13px] uppercase tracking-[0.08em] font-bold text-[#111010]/80 mb-3">
+              Direct Contact &amp; Resume
+            </div>
+
             <div
-              className="text-[clamp(56px,13vw,210px)] font-bold uppercase tracking-[-0.02em] leading-[0.84] origin-left transition-transform duration-150"
+              className="text-[clamp(44px,9vw,140px)] font-bold uppercase tracking-[-0.02em] leading-[0.88] origin-left transition-transform duration-150"
               style={{
                 fontVariationSettings: "'wdth' 70, 'wght' 800",
-                transform: `scale(${0.92 + textScale * 0.08})`,
+                transform: `scale(${0.94 + textScale * 0.06})`,
               }}
             >
-              READY TO BUILD
+              Get In Touch
             </div>
 
             {/* Expanding Divider Line */}
@@ -81,12 +85,31 @@ export function BlueScrollWipe() {
                 transform: `scaleX(${lineScale.toFixed(3)})`,
               }}
             />
+
+            {/* Direct Contact & Download CV Details on Blue Layer */}
+            <div className="mt-8 flex flex-wrap items-center gap-6">
+              <a
+                href={`mailto:${siteConfig.contact.email}`}
+                className="font-['Geist_Mono',monospace] text-[clamp(16px,2vw,24px)] font-bold text-[#111010] hover:underline underline-offset-4"
+              >
+                {siteConfig.contact.email}
+              </a>
+
+              <a
+                href={siteConfig.contact.resumeUrl || "/resume.pdf"}
+                download="Kishor_Kumar_Resume.pdf"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#111010] text-[var(--color-accent)] font-['Geist_Mono',monospace] text-[13px] uppercase font-bold tracking-wider hover:bg-white hover:text-[#111010] transition-colors shadow-lg"
+              >
+                <span>Download My CV</span>
+                <span>↓</span>
+              </a>
+            </div>
           </div>
 
           {/* Bottom Wipe Prompt */}
           <div className="flex justify-between items-end font-['Geist_Mono',monospace] text-[12px] uppercase tracking-[0.06em]">
-            <span className="max-w-[36ch] leading-relaxed">
-              Explore specialized capabilities in Full-Stack Engineering, Applied AI, and Hardware IoT below.
+            <span className="max-w-[42ch] leading-relaxed">
+              Available for AI/ML engineering, full-stack architectures, and IoT hardware collaborations.
             </span>
             <div className="flex items-center gap-2">
               <span>Continue scroll</span>

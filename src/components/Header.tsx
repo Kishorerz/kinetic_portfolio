@@ -67,7 +67,7 @@ export function Header() {
     { label: "Work", href: "/work", title: "SELECTED WORK", meta: "04 PROJECTS" },
     { label: "About", href: "/about", title: "ABOUT", meta: "KISHOR KUMAR" },
     { label: "Certifications", href: "/certifications", title: "ACCREDITATIONS", meta: "10 CREDENTIALS" },
-    { label: "Services", href: "/services", title: "CAPABILITIES", meta: "04 OFFERINGS" },
+    { label: "Contact", href: "/contact", title: "CONTACT", meta: "COLLABORATION" },
   ];
 
   return (
@@ -131,13 +131,16 @@ export function Header() {
               </a>
             );
           })}
+
+          {/* Download My CV Button */}
           <a
-            href="/contact"
-            onClick={(e) => handleNavClick(e, "/contact", "CONTACT", "START A PROJECT")}
-            data-cursor="Say hi"
-            className="rounded-full bg-[var(--color-accent)] px-4 py-2 font-medium text-[var(--color-on-accent)] hover:bg-[var(--color-text)] transition-all hover:scale-[1.02]"
+            href={siteConfig.contact.resumeUrl || "/resume.pdf"}
+            download="Kishor_Kumar_Resume.pdf"
+            data-cursor="Download"
+            className="rounded-full bg-[var(--color-accent)] px-4 py-2 font-medium text-[var(--color-on-accent)] hover:bg-[var(--color-text)] transition-all hover:scale-[1.02] flex items-center gap-1.5 shadow-[0_4px_16px_rgba(127,168,255,0.25)]"
           >
-            Start a project
+            <span>Download CV</span>
+            <span className="text-[10px]">↓</span>
           </a>
         </nav>
 
@@ -172,8 +175,7 @@ export function Header() {
               { label: "Work", href: "/work", title: "SELECTED WORK", meta: "04 PROJECTS", num: "02" },
               { label: "About", href: "/about", title: "ABOUT", meta: "KISHOR KUMAR", num: "03" },
               { label: "Certifications", href: "/certifications", title: "ACCREDITATIONS", meta: "10 CREDENTIALS", num: "04" },
-              { label: "Services", href: "/services", title: "CAPABILITIES", meta: "04 SERVICES", num: "05" },
-              { label: "Contact", href: "/contact", title: "CONTACT", meta: "COLLABORATION", num: "06" },
+              { label: "Contact", href: "/contact", title: "CONTACT", meta: "COLLABORATION", num: "05" },
             ].map((item) => (
               <a
                 key={item.label}
@@ -190,7 +192,15 @@ export function Header() {
             ))}
           </div>
 
-          <div className="font-['Geist_Mono',monospace] text-[12px] uppercase tracking-[0.06em] text-[var(--color-label)] flex flex-col gap-2">
+          <div className="font-['Geist_Mono',monospace] text-[12px] uppercase tracking-[0.06em] text-[var(--color-label)] flex flex-col gap-3">
+            <a
+              href={siteConfig.contact.resumeUrl || "/resume.pdf"}
+              download="Kishor_Kumar_Resume.pdf"
+              className="w-full py-3 rounded-full bg-[var(--color-accent)] text-[var(--color-on-accent)] font-semibold text-center flex items-center justify-center gap-2 text-[13px]"
+            >
+              <span>Download My CV</span>
+              <span>↓</span>
+            </a>
             <a href={`mailto:${siteConfig.contact.email}`} className="text-[var(--color-text)] lowercase text-[14px]">
               {siteConfig.contact.email}
             </a>
