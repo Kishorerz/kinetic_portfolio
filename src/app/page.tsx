@@ -3,7 +3,6 @@ import { KineticTitle } from "@/components/KineticTitle";
 import { Marquee } from "@/components/Marquee";
 import { SelectedWork } from "@/components/SelectedWork";
 import { CertificatesStackScroll } from "@/components/CertificatesStackScroll";
-import { CertificationsSection } from "@/components/CertificationsSection";
 import { PinnedStatement } from "@/components/PinnedStatement";
 import { BlueScrollWipe } from "@/components/BlueScrollWipe";
 import { ContactSection } from "@/components/ContactSection";
@@ -76,14 +75,11 @@ export default function Home() {
       {/* Infinite Skills Marquee */}
       <Marquee />
 
-      {/* Selected Work (4 Projects with Interactive Hover Dock & Leaning Follower Card) */}
+      {/* Selected Work (5 Projects with Interactive Hover Dock & Leaning Follower Card) */}
       <SelectedWork />
 
       {/* Continuous Pinned Scroll Certificates Stacking (0 to 100% progress scrub) */}
       <CertificatesStackScroll />
-
-      {/* Comprehensive Verifiable Accreditations Grid (Filter, Search & Verified Links) */}
-      <CertificationsSection />
 
       {/* Pinned Scroll Statement (Word-by-word lighting) */}
       <PinnedStatement />

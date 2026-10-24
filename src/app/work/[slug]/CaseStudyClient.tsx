@@ -8,10 +8,11 @@ import { Footer } from "@/components/Footer";
 import { KineticTitle } from "@/components/KineticTitle";
 import { usePageTransition } from "@/components/PageTransition";
 import {
+  CodeSurePreview,
+  KineticPortfolioPreview,
   ChainSensePreview,
   PathfindrPreview,
   PrecisionFarmingPreview,
-  CodeSurePreview,
 } from "@/components/ProjectPreviews";
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
 
@@ -23,10 +24,11 @@ export function CaseStudyClient({ project }: CaseStudyClientProps) {
   const { navigateWithTransition } = usePageTransition();
 
   const previewMap: Record<string, React.ReactNode> = {
+    codesure: <CodeSurePreview />,
+    "kinetic-portfolio": <KineticPortfolioPreview />,
     chainsense: <ChainSensePreview />,
     pathfindr: <PathfindrPreview />,
     "precision-farming": <PrecisionFarmingPreview />,
-    codesure: <CodeSurePreview />,
   };
 
   const handleBack = (e: React.MouseEvent) => {

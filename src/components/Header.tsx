@@ -65,7 +65,7 @@ export function Header() {
   };
 
   const navItems = [
-    { label: "Projects", href: "/work", title: "PROJECTS", meta: "04 WORKS" },
+    { label: "Projects", href: "/work", title: "PROJECTS", meta: "05 WORKS" },
     { label: "About", href: "/about", title: "ABOUT", meta: "KISHOR KUMAR" },
     { label: "Certifications", href: "/certifications", title: "ACCREDITATIONS", meta: "10 CREDENTIALS" },
     { label: "Contact", href: "/contact", title: "CONTACT", meta: "COLLABORATION" },
@@ -174,7 +174,7 @@ export function Header() {
           <div className="flex flex-col divide-y divide-[var(--color-hairline)]">
             {[
               { label: "Home", href: "/", title: "HOME", meta: "PORTFOLIO", num: "01" },
-              { label: "Projects", href: "/work", title: "PROJECTS", meta: "04 WORKS", num: "02" },
+              { label: "Projects", href: "/work", title: "PROJECTS", meta: "05 WORKS", num: "02" },
               { label: "About", href: "/about", title: "ABOUT", meta: "KISHOR KUMAR", num: "03" },
               { label: "Certifications", href: "/certifications", title: "ACCREDITATIONS", meta: "10 CREDENTIALS", num: "04" },
               { label: "Contact", href: "/contact", title: "CONTACT", meta: "COLLABORATION", num: "05" },
